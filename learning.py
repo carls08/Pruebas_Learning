@@ -3,63 +3,67 @@ import matplotlib.pyplot as plt
 from sklearn import linear_model
 import numpy as np
 from sklearn.metrics import mean_squared_error
+from sklearn.preprocessing import LabelEncoder
 
-
-
-
-
-##df1=pd.read_csv("dataset.csv",delimiter=",")
-##print (df1)
-##df1 =pd.read_csv("flare.data2",delimiter=" ")
-
+#Leemos el archivo .csv, delimitado por ";"
 df =pd.read_csv("dataset_Facebook.csv",delimiter=";")
-##print(df)
-
+#aplicamos el metodo Dataframe
 df=pd.DataFrame(df)
 
-##Reemplazamos las espacios vacios o nan con "0"
-df=df.replace(np.nan,"0")
+#se define el objeto de LaberEncoder
+encoder=LabelEncoder()
 
-#Cambio de variable categorica a numerica
-type_={'Photo':0,'Status':1,'Link':2,'Video':3}
-df['Type']=df['Type'].map(type_)
+#Se crea nueva columna para el dataframe donde escogemos solo los valores de Type y pasarlos a Enteros
+df['n_type']=encoder.fit_transform(df.Type.values)
 
+#se reemplaza los valores nan por valores de la moda
+df[['Paid']]=df[['Paid']].replace(np.nan,"0.0")
+df[['share']]=df[['share']].replace(np.nan,"13.0")
+df[['like']]=df[['like']].replace(np.nan,"98.0")
 
-##Filtrado de las variables independientes
-filtrados=df[['Type','Paid','share']]
-
-
-##Variable dependiente
-dependientes=df[['Total Interactions']]
-##print(dependientes)
+#Variable independientes
+X =df[['Paid','share','n_type']]
+#Variables independientes   
+y=df[['Total Interactions']]
 
 
 
 
 from sklearn.model_selection import train_test_split
 
-X_train, X_test, y_train, y_test = train_test_split(filtrados,dependientes,test_size=0.5,random_state=42)
+#utilizamos solo el 70% para entrenar
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3)
 
 regresion=linear_model.LinearRegression()
+
+#Entrenamos nuestros datos con X_train y y_train
 regresion=regresion.fit(X_train,y_train)
 
 y_pred=regresion.predict(X_test)
 
+#Valores de la pendiente y la intercepcion
+print("El valor de la pendiente es: "+str(regresion.coef_))
+print("Elvalor de la b es: "+str(regresion.intercept_))
 
+#El score de la la prediccion
 r2=regresion.score(X_train,y_train)
 print(r2)
-print("Valor de X",regresion.coef_ + regresion.intercept_)
 
-print(np.mean(np.absolute(y_pred - y_test)))
-print(np.mean(y_pred- y_test)**2)
-mse=mean_squared_error(y_test, y_pred)
-print("La raiz del error cuadratico es: ",np.sqrt(mse))
+#Nuestros valores de la prediccion
+print(y_pred)
 
-plt.figure(figsize=(10,6))
-plt.scatter(y_test,y_pred)
+#omitir por ahora
+#print(np.mean(np.absolute(y_pred - y_test)))
+#print(np.mean(y_pred- y_test)**2)
+#mse=mean_squared_error(y_test, y_pred)
+#print("La raiz del error cuadratico es: ",np.sqrt(mse))
+
+#La grafica para ver que nuestra prediccion sea lineal
+plt.scatter(y_pred,y_test)
+plt.xlabel("independiente")
+plt.ylabel("Dependiente")
 plt.plot(y_pred, y_pred, color="Red")
 plt.show()
-##print(y_pred)
 
 
 

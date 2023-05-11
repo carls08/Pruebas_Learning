@@ -25,7 +25,7 @@ plt.ylabel(" ")
 plt.plot(comenzar.history["loss"])
 plt.show()
 
-resultado=modelo.predict([100.0])
+resultado=modelo.predict([80.0])
 print(resultado)
 
 print("Variables internas del modelo " )
