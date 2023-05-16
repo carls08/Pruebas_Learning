@@ -71,14 +71,16 @@ Valor_b=regresion.coef_
 Valor_a=regresion.intercept_
 y_pred=regresion.predict(X_test)
 
+
 #GRAFICAMOS 
 plt.scatter(y_pred,y_test)
-plt.xlabel("independiente")
-plt.ylabel("Dependiente")
+plt.xlabel("Valores de Y_pred")
+plt.ylabel("Valores de Y_test")
 plt.plot(y_pred, y_pred, color="Red")
 plt.show()
 
-regresion.predict(X_test)
 
-#mse=mean_squared_error(y_test, y_pred)
-#print("La raiz del error cuadratico es: ",np.sqrt(mse))
+print(y_pred)
+
+mse=mean_squared_error(y_pred, y_test)
+print("La raiz del error cuadratico es: ",np.sqrt(mse))
